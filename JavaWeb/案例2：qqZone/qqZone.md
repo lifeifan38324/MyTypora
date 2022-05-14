@@ -18,7 +18,7 @@
 2. 属性分析
 3. 实体之间的关系
 
-![02.QQZone-ER图](E:\OneDrive\OneDrive - mail.scut.edu.cn\MyTypora\JavaWeb\案例2：qqZone\imgs\02.QQZone-ER图.png)
+![02.QQZone-ER图](./imgs/02.QQZone-ER图.png)
 
 
 
