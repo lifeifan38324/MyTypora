@@ -35,7 +35,7 @@
 
 # 二.数据库设计
 
-![image-20220415184149297](E:\OneDrive\OneDrive - mail.scut.edu.cn\MyTypora\JavaWeb\案例3：书城\imgs\1业务关系)
+![image-20220415184149297](.\imgs\1业务关系.jpg)
 
 ### 2.1`t_book`: 
 
