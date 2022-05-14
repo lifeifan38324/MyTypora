@@ -85,7 +85,7 @@
 
     - 创建远程库别名：`git remote add 别名 链接`
 
-    - 将本地代码推送到远程库：`git push 远程库别名 本地分支名`
+    - 将本地代码推送到远程库：<span style="color:red;font-weight:bold">`git push 远程库别名 本地分支名:远程分支名`</span>
 
         - 报错：`remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.即GitHub不支持密码登录`
 
