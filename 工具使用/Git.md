@@ -97,9 +97,9 @@
     
         - 打开主人仓库，`settings`，`Collaborators`，
 
-4. 另一个本地账号：
+4. <span style="color:red;font-weight:bold">另一个本地账号</span>：
 
-    - 将远程库代码拉取到本地：`git pull 远程库别名 远程库分支`
+    - 将远程库代码拉取到本地**当前分支**：`git pull 远程库别名 远程库分支`
 
     - 克隆远程仓库：`git clone 远程库HTTPS`。注意可以不需要登录账号。
 
