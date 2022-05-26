@@ -63,7 +63,7 @@
 
 6. 分支原理图解
 
-    ![image-20220506183544409](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E5%8E%9F%E7%90%86.png)
+    ![](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E7%89%88%E6%9C%AC%E5%88%86%E6%94%AF%E5%8E%9F%E7%90%86.png)
 
 # 四.团队合作：利用代码托管中心
 

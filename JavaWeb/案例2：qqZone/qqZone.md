@@ -18,7 +18,7 @@
 2. 属性分析
 3. 实体之间的关系
 
-![02.QQZone-ER图](./imgs/02.QQZone-ER图.png)
+![QQZone](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/QQZone.png)
 
 
 

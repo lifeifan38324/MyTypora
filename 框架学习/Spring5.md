@@ -8,7 +8,7 @@
 
 4. 框架结构
 
-    ![Spring5模块](./imgs/Spring5模块.bmp)
+    ![](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/Spring5%E6%A8%A1%E5%9D%97.bmp)
 
 # 二.`IOC`容器
 

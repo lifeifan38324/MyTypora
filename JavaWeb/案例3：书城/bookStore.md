@@ -35,7 +35,7 @@
 
 # 二.数据库设计
 
-![image-20220415184149297](./imgs/1业务关系.jpg)
+![](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/1%E4%B8%9A%E5%8A%A1%E5%85%B3%E7%B3%BB.jpg)
 
 ### 2.1`t_book`: 
 

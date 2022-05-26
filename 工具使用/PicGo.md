@@ -6,11 +6,11 @@
 
 2. 进入对象存储
 
-    ![image-20220524224627450](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E9%98%BF%E9%87%8C%E4%BA%91%E5%AD%98%E5%82%A8OSS%E4%BD%8D%E7%BD%AE.png)
+    ![](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E9%98%BF%E9%87%8C%E4%BA%91%E5%AD%98%E5%82%A8OSS%E4%BD%8D%E7%BD%AE.png)
 
 3. 选择一个<span style="color:blue">距离自己比较近</span>>的地区购买套餐，建议选择`40G包年`的套餐，点击付款
 
-    ![image-20220524225244171](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E9%98%BF%E9%87%8C%E4%BA%91%E5%AD%98%E5%82%A8%E5%A5%97%E9%A4%90%E9%80%89%E6%8B%A9.png)
+    ![](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E9%98%BF%E9%87%8C%E4%BA%91%E5%AD%98%E5%82%A8%E5%A5%97%E9%A4%90%E9%80%89%E6%8B%A9.png)
 
 4. 进入控制台，创建Bucket
 
@@ -32,4 +32,4 @@
 
 1. 打开偏好设置-图片，设置如下图
 
-   ![image-20220525084446708](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220525084446708.png)
+   ![](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220525084446708.png)
