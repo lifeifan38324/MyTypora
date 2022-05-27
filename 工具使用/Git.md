@@ -19,25 +19,21 @@
 
     - 新建并进入库目录，右键打开`GitBash`
     - 输入命令`git init`，生成一个`.git隐藏文件`
-3. 查看**本地库**状态
-
+3. <span style="color:blue;font-weight:bold">查看本地库</span>状态
     - `git status`
         - 红色表示文件未被追踪到，文件存在于**工作区**。
         - 绿色表示文件被追踪到，文件存在于**缓存区**。
     - `git reflog`：查看引用日志信息
         - `HRAD ->`指针，指向当前分区
-4. 添加：工作区 ----> 缓存区
-
-    - `git add 文件名`
-5. 删除：缓存区文件
-
-    - `git rm --cached 文件名`
-6. 提交：缓存区 --> 本地库
-
-    - `git commit -m "日志信息" 文件`
+4. <span style="color:blue;font-weight:bold">添加：</span>工作区 ----> 缓存区
+- `git add 文件名`
+5. <span style="color:blue;font-weight:bold">删除：</span>缓存区文件
+- `git rm --cached 文件名`
+6. <span style="color:blue;font-weight:bold">提交</span>当前分支：缓存区 --> 本地库
+- `git commit -m "日志信息" 文件`
 7. 修改代码
     - 修改 --> 添加到缓存区 --> 提交到本地库
-8. 版本穿梭
+8. <span style="color:blue;font-weight:bold">版本穿梭</span>
     - `git reset --hard 版本号`
     - 实际是指针控制版本：`head-->master-->first|second|third`
     - 版本切换时，实际是指针`master-->first|second|third`的变化。
@@ -46,20 +42,20 @@
 
 理解：初学者可以将分支理解为副本，底层是指针的引用。
 
-1. 查看分支：`git branch -v`
+1. <span style="color:blue;font-weight:bold">查看</span>分支：`git branch -v`
 
-2. 创建分支：`git branch 分支名`
+2. <span style="color:blue;font-weight:bold">创建</span>分支：`git branch 分支名`
 
-3. 切换分支：`git checkout 分支名`
+3. <span style="color:blue;font-weight:bold">切换</span>分支：`git checkout 分支名`
 
-4. 合并分支：
+4. <span style="color:blue;font-weight:bold">合并</span>分支：
 
     - `git merge 分支名` 将分支合并到当前分支上
     - 冲突合并：两个分支在**同一文件的同一位置**有两套完全不同的修改
         - 使用`vim打开文件`，删除多余内容，只剩下最终合并的内容
         - 添加缓存区，提交到本地库（注意这里不需要提交文件名）
 
-5. 删除分支：`git branch -d 本地分支名`
+5. <span style="color:blue;font-weight:bold">删除</span>分支：`git branch -d 本地分支名`
 
 6. 分支原理图解
 
@@ -79,33 +75,54 @@
 
         图片
 
-2. 创建远程库
+2. 在GitHub创建远程库
 
 3. `git`链接`GitHub远程库`
 
-    - 查看远程库：`git remote -v`
+    - <span style="color:blue;font-weight:bold">查看</span>远程库：`git remote -v`
 
-    - 创建远程库别名：`git remote add 别名 链接`
+    - <span style="color:blue;font-weight:bold">链接</span>远程库别名：`git remote add 别名 链接`
 
-    - 将本地代码推送到远程库：<span style="color:red;font-weight:bold">`git push 远程库别名 本地分支名:远程分支名`</span>
+    - <span style="color:blue;font-weight:bold">删除</span>远程库：`git remote remove 别名`
+
+    - 将本地代码<span style="color:blue;font-weight:bold">推送</span>到远程库：<span style="color:red;font-weight:bold">`git push 远程库别名 本地分支名:远程分支名`</span>
 
         - 报错：`remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.即GitHub不支持密码登录`
 
             解决：申请`token`，登陆时使用`token`代替密码进行登录。
+            
+        - 报错：`fatal: unable to access 'https://github.com/...'`
+        
+            原因：电脑使用了代理服务
+        
+            解决：在开启shadowsocks的前提下，手动配置git的代理。git客户端输入如下两个命令就可以了。
+        
+            ```git
+            git config --global http.proxy http://127.0.0.1:电脑代理的端口号
+            git config --global https.proxy http://127.0.0.1:电脑代理的端口号
+            ```
+        
+            参考文章：[CSDN](https://blog.csdn.net/qq_33349365/article/details/101514412)
+        
+            ps: 取消用户代理：
+        
+            ```git
+            git config --global --unset http.proxy
+            git config --global --unset https.proxy
+            ```
         
     - 添加另一个账户到团队
-    
+
         - 打开主人仓库，`settings`，`Collaborators`，
 
 4. <span style="color:red;font-weight:bold">另一个本地账号</span>：
 
-    - 将远程库代码拉取到本地**当前分支**：`git pull 远程库别名 远程库分支`
+    - 将远程库代码<span style="color:blue;font-weight:bold">拉取</span>到本地**当前分支**：`git pull 远程库别名 远程库分支`
 
-    - 克隆远程仓库：`git clone 远程库HTTPS`。注意可以不需要登录账号。
-
-        - 操作：1.拉取代码。2.初始化本地库。3.创建别名。
-
-    - 修改本地状态并提交。
+    - <span style="color:blue;font-weight:bold">克隆</span>远程仓库：`git clone 远程库HTTPS`。注意可以不需要登录账号。
+    - 操作：1.拉取代码。2.初始化本地库。3.创建别名。
+      
+- 修改本地状态并提交。
 
 # 五.跨团队协作
 
