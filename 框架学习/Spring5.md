@@ -94,7 +94,98 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
                 </property>
                 ```
         
-            - 
+        3. 注入集合
+        
+            - 数组类型属性
+        
+                创建类及属性----生成set()方法----配置文件
+        
+                ```xml
+                <property name="courses">
+                    <array>
+                        <value>java</value>
+                        <value>spring</value>
+                        <value>lff</value>
+                    </array>
+                </property>
+                ```
+        
+            - List集合类型属性
+        
+                ```xml
+                <property name="list">
+                    <list>
+                        <value>李非凡</value>
+                        <value>王林林</value>
+                        <value>李二帆</value>
+                    </list>
+                </property>
+                ```
+        
+            - Map集合类型属性
+        
+                ```xml
+                <property name="maps">
+                    <map>
+                        <entry key="李非凡" value="帅"></entry>
+                        <entry key="王林林" value="美"></entry>
+                    </map>
+                </property>
+                ```
+        
+            - Set集合类型属性
+        
+                ```xml
+                <property name="sets">
+                    <set>
+                        <value>李非凡</value>
+                        <value>王林林</value>
+                    </set>
+                </property>
+                ```
+
+        4. 注入特殊集合
+        
+            - 类属性
+        
+                ```xml
+                <property name="courseList">
+                    <list>
+                        <ref bean="course1"></ref>
+                        <ref bean="course2"></ref>
+                    </list>
+                </property>
+                ```
+        
+            - 抽取集合公共部分
+        
+                1). 在spring名称空间引入util
+        
+                ```xml
+                <beans xmlns="http://www.springframework.org/schema/beans"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xmlns:util="http://www.springframework.org/schema/util"
+                       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+                ```
+        
+                2). 使用util标签完成list集合注入提取
+        
+                ```xml
+                <!-- 1.提取集合类型属性 -->
+                <util:list id="bookList">
+                    <value>上下五千年</value>
+                    <value>细菌战</value>
+                    <value>克隆人</value>
+                </util:list>
+                <!-- 2.属性注入 -->
+                <bean id="book" class="com.atlff.spring5.collectiontype.Book">
+                    <property name="list" ref="bookList"></property>
+                </bean>
+                ```
+        
+                
+
 #### 3.2.2. 基于注解方式创建对象
 
 
