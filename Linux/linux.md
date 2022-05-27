@@ -69,7 +69,7 @@
 
 6. 所有命令
 
-    ![image-20220421155249641](./imgs/vim指令.png)
+    ![image-20220421155249641](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/vim%E6%8C%87%E4%BB%A4.png)
 
 ## 3.网络操作
 
@@ -88,7 +88,7 @@
 
 - 虚拟网络关系:
 
-    ![image-20220422214156890](./imgs/虚拟网络关系.png)
+    ![image-20220422214156890](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C%E5%85%B3%E7%B3%BB.png)
 
 ### 3.3网络设置
 
@@ -295,11 +295,11 @@
 
 1. `ll`查看文件权限
 
-    ![image-20220423202203750](./imgs/文件权限.png)
+    ![image-20220423202203750](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90.png)
 
 2. 文件属性
 
-    ![image-20220423203139826](./imgs/文件属性.png)
+    ![image-20220423203139826](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E6%96%87%E4%BB%B6%E5%B1%9E%E6%80%A7.png)
 
 3. 修改权限
 
@@ -347,7 +347,7 @@
 
     - 选项说明
 
-        ![image-20220423212108557](./imgs/tar工具的选项.png)
+        ![image-20220423212108557](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/tar%E5%B7%A5%E5%85%B7%E7%9A%84%E9%80%89%E9%A1%B9.png)
 
     - 例如：打包`-zcvf 文件名`。解包`-zxvf 文件 -C 解压路径`
 
@@ -362,15 +362,15 @@
 
 3. `df [-h]`空余磁盘
 
-    ![image-20220423224503087](./imgs/内存硬盘空间1.png)
+    ![image-20220423224503087](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E5%86%85%E5%AD%98%E7%A1%AC%E7%9B%98%E7%A9%BA%E9%97%B41.png)
 
 4. `free -h`查看内存使用情况
 
-   ![image-20220423224810034](./imgs/内存硬盘空间2.png)
+   ![image-20220423224810034](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E5%86%85%E5%AD%98%E7%A1%AC%E7%9B%98%E7%A9%BA%E9%97%B42.png)
 
 5. `lsblk`显示挂载点详细信息
 
-    ![image-20220423225601978](./imgs/挂载点信息.png)
+    ![image-20220423225601978](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E6%8C%82%E8%BD%BD%E7%82%B9%E4%BF%A1%E6%81%AF.png)
 
 6. 挂载/卸载光驱
 
@@ -380,7 +380,7 @@
 
     - 设置开机自动挂载：`vim /etc/fstab`
 
-        ![image-20220424082942586](./imgs/光盘挂载信息.png)
+        ![image-20220424082942586](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E5%85%89%E7%9B%98%E6%8C%82%E8%BD%BD%E4%BF%A1%E6%81%AF.png)
 
 7. 硬盘分区
 
@@ -402,7 +402,7 @@
        - “-u”：列出某个用户关联的所有进程
        - “-f” ：显示完整格式的进程列表
 
-       ![image-20220424122011696](./imgs/进程信息说明.png)
+       ![image-20220424122011696](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E8%BF%9B%E7%A8%8B%E4%BF%A1%E6%81%AF%E8%AF%B4%E6%98%8E.png)
 
    3. 终止进程:
 
@@ -447,11 +447,11 @@
 
     - 格式：
 
-        ![image-20220424154301601](./imgs/定时任务格式.png)
+        ![image-20220424154301601](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E6%A0%BC%E5%BC%8F.png)
 
-        ![image-20220424154338180](./imgs/定时任务通配符.png)
+        ![image-20220424154338180](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E9%80%9A%E9%85%8D%E7%AC%A6.png)
 
-        ![image-20220424154420180](./imgs/例子.png)
+        ![image-20220424154420180](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BE%8B%E5%AD%90.png)
 
 ## 12.软件安装
 
@@ -466,7 +466,7 @@
 
 1. `yum [-y安装中全回答yes] [参数]`
 
-    ![image-20220424161413468](./imgs/YUM安装包参数说明.png)
+    ![image-20220424161413468](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/YUM%E5%AE%89%E8%A3%85%E5%8C%85%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E.png)
 
 2. 修改镜像文件源：配置文件`/etc/yum.repos.d`
 
@@ -506,9 +506,9 @@
         [root@hadoop101 yum.repos.d]# yum list | grep firefox [root@hadoop101 ~]#yum -y install firefox
         ```
 
-    ![image-20220424164127323](./imgs/修改默认镜像源1.png)
+    ![image-20220424164127323](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E9%95%9C%E5%83%8F%E6%BA%901.png)
     
-    ![image-20220424164913588](./imgs/修改默认镜像源2.png)
+    ![image-20220424164913588](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E9%95%9C%E5%83%8F%E6%BA%902.png)
 
 # 三.`shell`编程
 
@@ -555,15 +555,15 @@
 
 3. 数值判断：
 
-    ![image-20220430171852662](./imgs/数值判断.png)
+    ![image-20220430171852662](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E6%95%B0%E5%80%BC%E5%88%A4%E6%96%AD.png)
 
 4. 文件权限判断：
 
-    ![image-20220430171940742](./imgs/文件权限判断.png)
+    ![image-20220430171940742](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90%E5%88%A4%E6%96%AD.png)
 
 5. 文件类型判断：
 
-    ![image-20220430172019968](./imgs/文件类型判断.png)
+    ![image-20220430172019968](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B%E5%88%A4%E6%96%AD.png)
 
 6. 重要例子：三目运算符`[ 命令1 ] && echo true || echo false`
 
@@ -702,7 +702,7 @@
 
 ### 5.2`awk`
 
-![image-20220501104708194](./imgs/awk工具.png)
+![image-20220501104708194](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/awk%E5%B7%A5%E5%85%B7.png)
 
 ## 6.用户通信
 
