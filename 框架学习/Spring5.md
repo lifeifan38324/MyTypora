@@ -201,12 +201,239 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 #### 3.2.3Bean的生命周期
 
 1. 通过构造器创建Bean实例（无参数构造器）
+
 2. 为Bean的属性设置值（调用set方法）
+
+3. <span style="color:gray">把bean实例传递bean后置处理器的方法</span>
+
+    添加后置处理器：
+
+    - 创建类，实现接口`BeanPostProcessor`，创建后置处理器，重写方法
+
+        ```java
+        public class MyBeanPost implements BeanPostProcessor {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+                System.out.println("初始化之前执行的方法被调用。。。");
+                return bean;
+            }
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+                System.out.println("初始化之后执行的方法被调用。。。");
+                return bean;
+            }
+        }
+        ```
+
+    - 配置文件配置后置处理器：
+
+        ```xml
+        <bean id="myBeanPost" class="com.atlff.spring5.bean.MyBeanPost"></bean>
+        ```
+
+        
+
 3. 调用bean的初始化方法（需要进行配置初始化的方法）
+
+    - 在`bean类`中：编写初始化方法
+
+    - 配置文件中：使用bean标签的`init-method属性`
+
+        ```xml
+        <bean id="orders" class="com.atlff.spring5.bean.Orders" init-method="initMethod"></bean>
+        ```
+
+3. <span style="color:gray">把bean实例传递bean后置处理器的方法</span>
+
 4. bean可以使用了
+
 5. 当关闭容器的时候，调用bean的销毁的方法（需要进行配置销毁的方法）
 
-#### 3.2.2 基于注解方式创建对象
+    - 在`bean类`中：编写销毁方法
+
+    - 配置文件中：使用bean标签的`destroy-method属性`
+
+        ```xml
+        <bean id="orders" class="com.atlff.spring5.bean.Orders" init-method="initMethod" destroy-method="destroyMethod"></bean>
+        ```
+        
+    - 销毁`bean`：`((ClassPathXmlApplicationContext) context).close();`
+    
+    - 注意：多实例作用域的类，不执行销毁方法。
+
+#### 3.2.4 自动注入属性(不建议使用)
+
+配置文件bean标签属性`autowrite="byName"`或者`autowrite="byType"`
+
+```xml
+<bean id="emp" class="com.atlff.spring5.autowrite.Emp" autowire="byName"></bean>
+```
+
+#### 3.2.5 引入外部属性文件
+
+原始方法：xml配置数据库连接池
+
+```xml
+<bean id="dateSource" class="com.alibaba.druid.pool.DruidDataSource">
+    <property name="driverClassName" value=""></property>
+    <property name="url" value=""></property>
+    <property name="username" value=""></property>
+    <property name="password" value=""></property>
+</bean>
+```
+
+使用外部配置文件改进方法：引入外部属性文件配置数据库连接池
+
+1. 编写`jdbc.properties`配置文件
+
+    ```
+    prop.driverClass=com.mysql.jdbc.Driver
+    prop.url=jdbc:mysql://localhost:3306/bookdb
+    prop.userName=
+    prop.password=
+    ```
+
+2. 引入context命名空间
+
+    ```xml
+    <beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:context="http://www.springframework.org/schema/context"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                               http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    </beans>
+    ```
+
+3. 引入外部属性文件
+
+    ```xml
+    <context:property-placeholder location="jdbc.properties" />
+    <bean id="dateSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${prop.driverClass}"></property>
+        <property name="url" value="${prop.url}"></property>
+        <property name="username" value="${prop.userName}"></property>
+        <property name="password" value="${prop.password}"></property>
+    </bean>
+    ```
+
+----
+
+
+
+#### 3.2.6 基于注解方式创建对象
+
+1. 创建对象的四个基本注解
+
+    - @Component
+    - @Service
+    - Controller
+    - Repository
+
+2. 使用注解创建对象的基本步骤
+
+    - 导入`spring-aop`的工具包
+
+        ![image-20220529192136090](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220529192136090.png)
+
+    - 引入名称空间
+
+        ```xml
+        <beans xmlns="http://www.springframework.org/schema/beans"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:context="http://www.springframework.org/schema/context"
+               xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+            <context:component-scan base-package="com.atlff.spring5"></context:component-scan></beans>
+        ```
+
+    - 开启组件扫描
+
+        ```xml
+        <context:component-scan base-package="com.atlff.spring5"></context:component-scan>
+        ```
+
+    - 使用注解创建对象
+
+        ```java
+        @Component(value = "userService")
+        ```
+
+3. 组件扫描的细节问题
+
+    - 默认为所有注解都进行扫描
+
+    - 只扫描`Controller`注解
+
+        ```xml
+        <context:component-scan base-package="com.atguigu.springmvc" use-default-filters="false">
+        	<context:include-filter type="annotation"
+                   expression="org.springframework.stereotype.Controller"/>
+        </context:component-scan>
+        ```
+
+        
+
+    - 除了Controller注解，其余全部扫描
+
+        ```xml
+        <context:component-scan base-package="com.atguigu.springmvc">
+        	<context:exclude-filter type="annotation"
+                	expression="org.springframework.stereotype.Controller"/>
+        </context:component-scan>
+        ```
+
+#### 3.2.7 基于注解方式注入属性
+
+1. 四种基本注解
+
+    - @AutoWired：根据属性类型自动注入
+
+    - @Qualifier：根据属性名称注入
+
+        需要与@AutoWired一起使用，用于指定具体实现类的名称
+
+        ```java
+        @Autowired
+        @Qualifier(value = "userDaoImpl")
+        private UserDao userDao;
+        ```
+
+        
+
+    - @Resource：根据属性类型or属性名称注入
+
+        根据类型：`@Resource`
+
+        根据名称：`@Resource(name = "userDaoImpl")`
+
+    - @Value：注入普通类型的属性
+
+2. 使用方法
+
+    参考[3.2.6节](#3.2.6 基于注解方式创建对象)
+
+#### 3.2.8 完全注解开发
+
+1. 创建配置类，替代xml配置文件
+
+    ```java
+    @Configuration //作为配置类，替换xml文件
+    @ComponentScan(basePackages = {"com.atlff.spring5"})
+    public class SpringConfig {
+    }
+    ```
+
+2. 加载配置类
+
+    ```java
+    public void test(){
+        ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+        UserService userService = context.getBean("userService", UserService.class);
+        userService.add();
+    }
+    ```
+
+    
 
 
 
