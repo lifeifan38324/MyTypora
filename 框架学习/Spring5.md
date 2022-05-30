@@ -661,31 +661,117 @@ public class PersonProxy {}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 四.`JdbcTemplate`
+
+## 1. 简介
+
+Spring5封装之后的JDBC
+
+## 2. 准备工作
+
+1. 导入jar包
+
+    ![image-20220530122930818](C:/Users/LFF/AppData/Roaming/Typora/typora-user-images/image-20220530122930818.png)
+
+2. 在xml配置文件中，配置数据库的连接池
+
+   ```xml
+   <!-- 数据库连接池 -->
+   <bean id="dateSource" class="com.alibaba.druid.pool.DruidDataSource">
+       <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+       <property name="url" value="jdbc:mysql://rm-7xv9dodb4eb8c6b62yo.mysql.rds.aliyuncs.com:3306/user_db"></property>
+       <property name="username" value="root"></property>
+       <property name="password" value="Lff980316*"></property>
+   </bean>
+   ```
+   
+3. 配置JdbcTemplate对象，并注入dateSource
+
+    ```xml
+    <!-- JdbcTemplate对象 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <!-- 注入dateSource -->
+        <property name="dataSource" ref="dateSource"></property>
+    </bean>
+    ```
+
+4. 创建Service类和Dao类，在Dao类中注入JdbcTemplate对象
+
+    开启组件扫描
+
+    ```xml
+    <!-- 组件扫描 -->
+    <context:component-scan base-package="com.atlff.spring5"></context:component-scan>
+    ```
+
+    - service
+
+        ```java
+        @Service
+        public class BookService {
+            @Autowired
+            private BookDao bookDaoImpl;
+            public int update(Book book){
+                return bookDaoImpl.updateBook(book);
+            }
+        }
+        ```
+
+    - dao和daoImpl
+
+        ```java
+        public interface BookDao {
+            public int updateBook(Book book);
+        }
+        
+        @Repository
+        public class BookDaoImpl implements BookDao{
+            @Autowired
+            private JdbcTemplate jdbcTemplate;
+            @Override
+            public int updateBook(Book book){
+                String sql = "insert into t_user values(?,?,?)";
+                Object[] args = {book.getId(), book.getName(), book.getStatus()};
+                int update = jdbcTemplate.update(sql, args);
+                return update;
+            }
+        }
+        ```
+
+    - entity：对象类以及对应的属性
+
+## 3. 增删改查
+
+- 增删改：update
+
+- 查（返回某个值）：queryForObject
+
+- 查（返回某个对象）：
+
+    ```java
+    queryForObject(String sql, RowMapper<T> rowMapper, Object... args)
+    ```
+
+    本质：调用set方法赋值
+
+    注意查询语句的字段名要和entity中的字段名匹配。例如：
+
+    ```sql
+    select user_id as id, username as name, ustatus as status from t_user where user_id = ?
+    ```
+
+- 查（返回对象列表）：
+
+    ```java
+    query(sql, new BeanPropertyRowMapper<>(Book.class))
+    ```
+
+- 批量增删改：
+
+    ```java
+    public int[] batchUpdate(String sql, List<Object[]> batchArgs)
+    ```
+
 
 # 五.事务管理
 
