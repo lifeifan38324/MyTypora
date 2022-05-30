@@ -326,8 +326,8 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
     - @Component
     - @Service
-    - Controller
-    - Repository
+    - @Controller
+    - @Repository
 
 2. 使用注解创建对象的基本步骤
 
@@ -435,6 +435,229 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
     
 
+# 三. `Aop`(Aspect Oriented Programming)
+
+## 1. 简介
+
+1. 目的
+
+    面向切面编程：利用AOP可以对业务逻辑的各个部分进行隔离，从而使得业务逻辑各部分之间的耦合度降低，提高程序的可重用性
+
+2. 术语
+
+    - 连接点：可以被增强的方法
+    - 切入点：真正被增强的方法
+    - 通知（增强）
+        - 实际增强的逻辑部分称为通知（增强）
+        - 类型：
+            1. 前置通知
+            2. 后置通知
+            3. 环绕通知
+            4. 异常通知
+            5. 最终通知
+    - 切面：把通知应用到切入点的过程
+
+
+
+## 2. 底层原理：动态代理
+
+### 2.1 有接口情况：使用JDK动态代理
+
+1. 基本原理
+
+    ![image-20220529230121546](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220529230121546.png)
+
+2. 使用JDK的`java.lang.reflect.Proxy`类中的`newProxyInstance`方法
+
+    `newProxyInstance(ClassLoader loader, Class<?>[] interfaces, InvocationHandler h)`
+
+    - 参数1:类加载器
+    - 参数2:被代理类实现的接口
+    - 参数3:接口的实现类，实现需要增强的功能
+    
+3. 例子：
+
+    ```java
+    public class JDKProxy {
+        public static void main(String[] args) {
+            Class[] interfaces = {UserDao.class};
+            UserDaoImpl userDao = new UserDaoImpl();
+            UserDao dao = (UserDao) Proxy.newProxyInstance(UserDao.class.getClassLoader(), interfaces, new UserDaoProxy(userDao));
+            String lff = dao.update("李非凡");
+            System.out.println("lff = " + lff);
+        }
+    }
+    class UserDaoProxy implements InvocationHandler{
+        private Object object;
+        public UserDaoProxy(Object object){
+            this.object = object;
+        }
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            String methodName = method.getName();
+            System.out.println("方法" + methodName + "被调用之前的增强功能");
+            Object res = method.invoke(object, args);
+            System.out.println("方法" + methodName + "被调用之后的增强功能");
+            return res;
+        }
+    }
+    ```
+
+### 2.2 没有接口情况：使用CGLIB动态代理
+
+![image-20220529230202109](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220529230202109.png)
+
+### 2.3 AOP操作
+
+简介：Spring框架基于AspectJ实现AOP操作，AspectJ不是Spring的组成部分，但通常与Spring一起实现AOP操作
+
+#### 2.3.1 导入AspectJ的包，以及其依赖包
+
+![image-20220530092622862](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220530092622862.png)
+
+![image-20220530092541523](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220530092541523.png)
+
+#### 2.3.2 切入点表达式
+
+语法结构：execution([权限修饰符] [返回类型] [类全路径] [方法名称] [参数列表])
+
+- 举例1：对com.atlff.dao.BookDao类里面的add进行增强
+
+    `execution(* com.atlff.dao.BookDao.add(..))`
+
+- 举例2：对com.atlff.dao.BookDao类里面的所有方法进行增强
+
+    `execution(* com.atlff.dao.BookDao.*(..))`
+
+- 举例3：对com.atlff.dao包里面的所有类的所有方法进行增强
+
+    `execution(* com.atlff.dao.*.*(..))`
+
+#### 2.3.3 在配置文件中引入名称空间，开启注解扫描，开启Aspect生成代理对象
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!-- 1.开启注解扫描 -->
+    <context:component-scan base-package="com.atlff.spring5.aopanno"></context:component-scan>
+    <!-- 2.开启Aspect生成代理对象  -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>
+```
+
+#### 2.3.4 在类中使用注解
+
+```java
+//被代理的类
+@Component
+public class User {
+    public void add(){
+        System.out.println("add()...");
+    }
+}
+
+// 代理类
+@Component
+@Aspect
+public class UserProxy {
+    //Before设置前置通知
+    @Before(value = "execution(* com.atlff.spring5.aopanno.User.add(..))")
+    public void before(){
+        System.out.println("Before...");
+    }
+
+    //Before设置后置通知
+    @AfterReturning(value = "execution(* com.atlff.spring5.aopanno.User.add(..))")
+    public void afterReturning(){
+        System.out.println("AfterReturning...");
+    }
+
+    //After设置最终通知
+    @After(value = "execution(* com.atlff.spring5.aopanno.User.add(..))")
+    public void after(){
+        System.out.println("After...");
+    }
+
+    //AfterThrowing设置异常通知
+    @AfterThrowing(value = "execution(* com.atlff.spring5.aopanno.User.add(..))")
+    public void afterThrowing(){
+        System.out.println("AfterThrowing...");
+    }
+
+    //Around设置环绕通知
+    @Around(value = "execution(* com.atlff.spring5.aopanno.User.add(..))")
+    public void around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        System.out.println("Around之前...");
+        proceedingJoinPoint.proceed();
+        System.out.println("Around之后...");
+    }
+}
+```
+
+#### 2.3.5 公共的切入点的抽取：使用Pointcut注解
+
+```java
+@Pointcut(value = "execution(* com.atlff.spring5.aopanno.User.add(..))")
+public void pointcut(){}
+
+//Before设置前置通知
+@Before(value = "pointcut()")
+public void before(){
+    System.out.println("Before...");
+}
+```
+
+#### 2.3.6 当有多个增强类增强同一个方法，设置增强类的优先级
+
+`@Order(value = 3)`，值越小优先级越高
+
+```java
+@Component
+@Aspect
+@Order(value = 3)
+public class PersonProxy {}
+```
+
+#### 2.3.7 完全注解开发
+
+- 创建配置类，不需要xml文件
+
+    ```java
+    @Configuration
+    @ComponentScan(basePackages = {"com.atlff"})
+    @EnableAspectJAutoProxy(proxyTargetClass = true)
+    public class Config {
+    }
+    ```
+
+    
+
+### 2.4 基于配置文件实现AOP操作
+
+1. 新建类
+
+2. 配置文件
+
+    ```xml
+    <!-- 1.创建对象 -->
+    <bean id="book" class="com.atlff.spring5.aopxml.Book"></bean>
+    <bean id="bookProxy" class="com.atlff.spring5.aopxml.BookProxy"></bean>
+    <!-- 2.配置AOP的增强 -->
+    <aop:config>
+        <!-- 2.1切入点 -->
+        <aop:pointcut id="p" expression="execution(* com.atlff.spring5.aopxml.Book.*(..))"/>
+        <!-- 2.2切面-->
+        <aop:aspect ref="bookProxy">
+            <aop:before method="before" pointcut-ref="p"/>
+        </aop:aspect>
+    </aop:config>
+    ```
 
 
 
@@ -453,11 +676,16 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
 
 
-# 三.`Aop`
+
+
+
+
+
+
+
+
 
 # 四.`JdbcTemplate`
 
 # 五.事务管理
-
-# 
 
