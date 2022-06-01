@@ -1,3 +1,5 @@
+[TOC]
+
 # 一.`Spring5`的下载与安装
 
 1. 打开官网：`spring.io`，找到`SpringFramework`查看版本（GA为稳定版），点击`GitHub`
@@ -324,10 +326,10 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
 1. 创建对象的四个基本注解
 
-    - @Component
-    - @Service
-    - @Controller
-    - @Repository
+    - **@Component**
+    - **@Service**
+    - **@Controller**
+    - **@Repository**
 
 2. 使用注解创建对象的基本步骤
 
@@ -386,9 +388,9 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
 1. 四种基本注解
 
-    - @AutoWired：根据属性类型自动注入
+    - **@AutoWired**：根据属性类型自动注入
 
-    - @Qualifier：根据属性名称注入
+    - **@Qualifier**：根据属性名称注入
 
         需要与@AutoWired一起使用，用于指定具体实现类的名称
 
@@ -398,15 +400,13 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
         private UserDao userDao;
         ```
 
-        
-
-    - @Resource：根据属性类型or属性名称注入
+    - **@Resource**：根据属性类型or属性名称注入
 
         根据类型：`@Resource`
 
         根据名称：`@Resource(name = "userDaoImpl")`
 
-    - @Value：注入普通类型的属性
+    - **@Value**：注入普通类型的属性
 
 2. 使用方法
 
@@ -679,9 +679,9 @@ Spring5封装之后的JDBC
    <!-- 数据库连接池 -->
    <bean id="dateSource" class="com.alibaba.druid.pool.DruidDataSource">
        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-       <property name="url" value="jdbc:mysql://rm-7xv9dodb4eb8c6b62yo.mysql.rds.aliyuncs.com:3306/user_db"></property>
-       <property name="username" value="root"></property>
-       <property name="password" value="Lff980316*"></property>
+       <property name="url" value="jdbc:mysql://:3306/user_db"></property>
+       <property name="username" value=""></property>
+       <property name="password" value=""></property>
    </bean>
    ```
    
@@ -774,4 +774,198 @@ Spring5封装之后的JDBC
 
 
 # 五.事务管理
+
+## 1. 简介
+
+1. 定位：数据库操作最基本的逻辑单元
+2. 特性（ACID）
+    - 原子性：
+    - 一致性：
+    - 隔离性：
+    - 持久性：
+
+## 2. 事务操作
+
+### 2.1 编程式事务管理
+
+传统方法，try...catch...语句
+
+### 2.2 声明式事务管理
+
+底层使用AOP实现事务管理
+
+#### 2.2.1 基于注解方式 
+
+1. 配置文件配置事务管理器
+
+    ```xml
+    <!--创建事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dateSource"></property>
+    </bean>
+    ```
+
+2. 开启事务注解
+
+    1）引入名称空间tx
+
+    ```xml
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    
+    xsi:schemaLocation="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    ```
+
+    2）开启事务注解
+
+    ```xml
+    <!--开启事务注解-->
+    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+    ```
+
+3. 在service类上面（或者service类里面的方法上面添加注解）
+
+    事务注解：`@Transactional`
+
+    - 类：所有方法添加事务
+    - 方法：该方法实现事务
+
+    ```java
+    @Service
+    @Transactional
+    public class UserService{...}
+    ```
+
+4. 事务管理的参数配置
+
+    ![image-20220531222004853](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531222004853.png)
+
+    - **propagation**：事务的传播行为，默认为`REQUIRED`
+
+        ![image-20220531223347686](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531223347686.png)
+
+        ![事务传播行为](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA.bmp)
+
+    - **isolation**：事务的隔离级别
+
+        **并发操作中的问题：**
+
+        ![image-20220531231427590](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531231427590.png)
+
+        - 脏读：一个未提交的事务读取到另一个**未提交**事务的数据
+
+        - 不可重复读：一个未提交的事务读取到另一个提交事务的**修改**数据
+
+        - 幻读：一个未提交的事务读取到另一个提交事务的**添加**数据
+
+        **解决问题的方法，设置事务的隔离级别：**默认为`REPEATABLE READ`
+
+        ![事务隔离级别](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB.bmp)
+    
+        
+    
+    - **timeout**：超时时间
+    
+        - 事务需要在一定时间内提交，如果不提交则进行回滚
+    
+        - 默认值为-1，设置时间以秒为单位进行计算
+    
+    - readOnly：是否只读
+    
+        - 读：查询操作，写：增删改操作
+        - 默认值：false
+    
+    - rollbackFor：回滚
+    
+        - 设置出现那些异常进行事务回滚
+    
+    - noRrollbackFor：不回滚
+    
+        - 设置出现那些异常不进行事务回滚 
+
+#### 2.2.2 基于xml配置文件方式
+
+1. 配置事务管理器
+
+    ```xml
+    <!--创建事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dateSource"></property>
+    </bean>
+    ```
+
+    
+
+2. 配置通知
+
+    ```xml
+    <!--配置通知-->
+    <tx:advice id="txadvice">
+        <!--配置事务参数-->
+        <tx:attributes>
+            <!--指定那种规则的方法上添加事务-->
+            <tx:method name="accountMoney" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    ```
+
+    
+
+3. 配置切入点和切面
+
+    ```xml
+    <!--配置切入点和切面-->
+    <aop:config>
+        <!--配置切入点-->
+        <aop:pointcut id="pt" expression="execution(* com.atlff.spring5.service.UserService.*(..))"/>
+        <!--配置切面-->
+        <aop:advisor advice-ref="txadvice" pointcut-ref="pt"/>
+    </aop:config>
+    ```
+
+#### 2.2.3 完全注解声明式事务管理
+
+创建配置类，使用配置类代替xml文件
+
+```java
+@Configuration //配置类
+@ComponentScan(basePackages = "com.atlff.spring5") //开启组件扫描
+@EnableTransactionManagement //开启事务
+public class TxConfig {
+    //创建数据库连接池
+    @Bean
+    public DruidDataSource getDruidDataSource(){
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql:///user_db");
+        dataSource.setUsername("root");
+        dataSource.setPassword("abc123");
+        return dataSource;
+    }
+    //创建JdbcTemplate数据库链接模板
+    @Bean
+    public JdbcTemplate getJdbcTemplate(DataSource dataSource){
+        //到ioc容器中根据类型找到dataSource
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        jdbcTemplate.setDataSource(dataSource);
+        return jdbcTemplate;
+    }
+    //创建事务管理器
+    @Bean
+    public DataSourceTransactionManager getDataSourceTransactionManager(DataSource dataSource){
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource);
+        return transactionManager;
+    }
+}
+```
+
+
+
+### 2.3 Spring事务管理API
+
+ ![image-20220531211905875](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531211905875.png)
+
+
 
