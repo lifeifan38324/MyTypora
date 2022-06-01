@@ -63,7 +63,7 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
     
 2. 注入属性，DI：依赖注入
 
-    - 方式一：set方法注入
+    - 方式一：**set方法注入**
 
         1. 在类中添加set方法
         2. 在配置文件中，设置`Bean类`的`property属性(name,value)`
@@ -200,7 +200,7 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
     - singleton（单例）：加载配置文件时创建对象
     - prototype（多实例）：调用getBean方法时创建对象
 
-#### 3.2.3Bean的生命周期
+#### 3.2.3 Bean的生命周期
 
 1. 通过构造器创建Bean实例（无参数构造器）
 
@@ -786,15 +786,19 @@ Spring5封装之后的JDBC
 
 ## 2. 事务操作
 
-### 2.1 编程式事务管理
+### 2.1 Spring事务管理API
+
+ ![image-20220531211905875](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531211905875.png)
+
+### 2.2 编程式事务管理
 
 传统方法，try...catch...语句
 
-### 2.2 声明式事务管理
+### 2.3 声明式事务管理
 
 底层使用AOP实现事务管理
 
-#### 2.2.1 基于注解方式 
+#### 2.3.1 基于注解方式 
 
 1. 配置文件配置事务管理器
 
@@ -883,7 +887,7 @@ Spring5封装之后的JDBC
     
         - 设置出现那些异常不进行事务回滚 
 
-#### 2.2.2 基于xml配置文件方式
+#### 2.3.2 基于xml配置文件方式
 
 1. 配置事务管理器
 
@@ -924,7 +928,7 @@ Spring5封装之后的JDBC
     </aop:config>
     ```
 
-#### 2.2.3 完全注解声明式事务管理
+#### 2.3.3 完全注解声明式事务管理
 
 创建配置类，使用配置类代替xml文件
 
@@ -963,9 +967,142 @@ public class TxConfig {
 
 
 
-### 2.3 Spring事务管理API
+# 六. Spring5新特性
 
- ![image-20220531211905875](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531211905875.png)
+## 1. 基于java8
+
+整个框架的代码基于java8，运行时兼容JDK9，许多不建议使用的类和方法在代码库中删除
+
+## 2. 自带日志封装
+
+Spring 5.0框架自带了通用的日志封装
+
+- Spring5已经移除Log4ConfigListener，官方建议使用Log4j2
+- Spring5框架整合Log4j2
+
+1）导入jar包
+
+![image-20220601170939805](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/202206011709145.png)
+
+2）新建配置文件`log4j2.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，可以看到log4j2内部各种详细输出-->
+<configuration status="INFO">
+    <!--先定义所有的appender-->
+    <appenders>
+        <!--输出日志信息到控制台-->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--控制日志输出的格式-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </console>
+    </appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <!--root：用于指定项目的根日志，如果没有单独指定Logger，则会使用root作为默认的日志输出-->
+    <loggers>
+        <root level="info">
+            <appender-ref ref="Console"/>
+        </root>
+    </loggers>
+</configuration>
+```
+
+## 3. 支持@Nullable注解
+
+可以用在类，方法上，方法参数，属性上，表示对应值可以为空。
+
+## 4. 函数式风格
+
+`GenericApplicationContext`/`AnnotationConfigApplicationContext`
+
+例子：
+
+```java
+@Test
+public void testGenericApplicationContext(){
+    //1. 创建GenericApplicationContext对象
+    GenericApplicationContext context = new GenericApplicationContext();
+    //2. 调用context的方法注册对象
+    context.refresh();
+    context.registerBean("user",User.class, ()->new User());
+    //3. 获取在spring中注册的对象
+    User user = (User)context.getBean("user");
+    System.out.println("user = " + user);
+}
+```
+
+## 5. 整合JUnit5
+
+### 5.1 同时兼容JUnit4
+
+以下为<span style="color:red">整合JUnit4</span>的方法
+
+1. 引入依赖包
+
+    ![image-20220601190021120](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/202206011900238.png)
+
+    和`JUnit4的依赖包`
+
+2. 通过注解整合JUnit4
+
+    ```java
+    @RunWith(SpringJUnit4ClassRunner.class)
+    @ContextConfiguration("classpath:bean.xml") //加载配置文件
+    public class JTest4 {
+        @Autowired
+        private UserService userService;
+    
+        @Test
+        public void test1(){
+            userService.accountMoney();
+        }
+    }
+    ```
+
+### 5.2 Spring5整合JUnit5
+
+1. 导入JUnit5的依赖包
+
+    `JUnit5.8.1`
+
+2. 在测试类中使用注解
+
+    ```java
+    //@ExtendWith(SpringExtension.class)
+    //@ContextConfiguration("classpath:bean.xml") //加载配置文件
+    
+    @SpringJUnitConfig(locations = "classpath:bean.xml") //符合注解，替换上面两个注解
+    public class JTest4 {
+        @Autowired
+        private UserService userService;
+    
+        @Test
+        public void test1(){
+            userService.accountMoney();
+        }
+    }
+    ```
+
+## 6. Webflux
+
+<span style="color:red;font-weight:bold">前置知识：SpringMVC，SpringBoot，Maven，Java8中的新特性</span>
+
+### 6.1 SpringWebflux介绍
 
 
 
+### 6.2 响应式编程
+
+
+
+### 6.3 Webflux执行流程 和 核心API
+
+
+
+### 6.4 SpringWebflux（基于注解编程模型）
+
+
+
+### 6.5 SpringWebflux（基于函数式编程模型）
