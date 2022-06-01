@@ -1,3 +1,5 @@
+[TOC]
+
 # 一.`Spring5`的下载与安装
 
 1. 打开官网：`spring.io`，找到`SpringFramework`查看版本（GA为稳定版），点击`GitHub`
@@ -61,7 +63,7 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
     
 2. 注入属性，DI：依赖注入
 
-    - 方式一：set方法注入
+    - 方式一：**set方法注入**
 
         1. 在类中添加set方法
         2. 在配置文件中，设置`Bean类`的`property属性(name,value)`
@@ -198,7 +200,7 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
     - singleton（单例）：加载配置文件时创建对象
     - prototype（多实例）：调用getBean方法时创建对象
 
-#### 3.2.3Bean的生命周期
+#### 3.2.3 Bean的生命周期
 
 1. 通过构造器创建Bean实例（无参数构造器）
 
@@ -324,10 +326,10 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
 1. 创建对象的四个基本注解
 
-    - @Component
-    - @Service
-    - @Controller
-    - @Repository
+    - **@Component**
+    - **@Service**
+    - **@Controller**
+    - **@Repository**
 
 2. 使用注解创建对象的基本步骤
 
@@ -386,9 +388,9 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
 1. 四种基本注解
 
-    - @AutoWired：根据属性类型自动注入
+    - **@AutoWired**：根据属性类型自动注入
 
-    - @Qualifier：根据属性名称注入
+    - **@Qualifier**：根据属性名称注入
 
         需要与@AutoWired一起使用，用于指定具体实现类的名称
 
@@ -398,15 +400,13 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
         private UserDao userDao;
         ```
 
-        
-
-    - @Resource：根据属性类型or属性名称注入
+    - **@Resource**：根据属性类型or属性名称注入
 
         根据类型：`@Resource`
 
         根据名称：`@Resource(name = "userDaoImpl")`
 
-    - @Value：注入普通类型的属性
+    - **@Value**：注入普通类型的属性
 
 2. 使用方法
 
@@ -679,9 +679,9 @@ Spring5封装之后的JDBC
    <!-- 数据库连接池 -->
    <bean id="dateSource" class="com.alibaba.druid.pool.DruidDataSource">
        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-       <property name="url" value="jdbc:mysql://rm-7xv9dodb4eb8c6b62yo.mysql.rds.aliyuncs.com:3306/user_db"></property>
-       <property name="username" value="root"></property>
-       <property name="password" value="Lff980316*"></property>
+       <property name="url" value="jdbc:mysql://:3306/user_db"></property>
+       <property name="username" value=""></property>
+       <property name="password" value=""></property>
    </bean>
    ```
    
@@ -775,3 +775,334 @@ Spring5封装之后的JDBC
 
 # 五.事务管理
 
+## 1. 简介
+
+1. 定位：数据库操作最基本的逻辑单元
+2. 特性（ACID）
+    - 原子性：
+    - 一致性：
+    - 隔离性：
+    - 持久性：
+
+## 2. 事务操作
+
+### 2.1 Spring事务管理API
+
+ ![image-20220531211905875](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531211905875.png)
+
+### 2.2 编程式事务管理
+
+传统方法，try...catch...语句
+
+### 2.3 声明式事务管理
+
+底层使用AOP实现事务管理
+
+#### 2.3.1 基于注解方式 
+
+1. 配置文件配置事务管理器
+
+    ```xml
+    <!--创建事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dateSource"></property>
+    </bean>
+    ```
+
+2. 开启事务注解
+
+    1）引入名称空间tx
+
+    ```xml
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    
+    xsi:schemaLocation="http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    ```
+
+    2）开启事务注解
+
+    ```xml
+    <!--开启事务注解-->
+    <tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
+    ```
+
+3. 在service类上面（或者service类里面的方法上面添加注解）
+
+    事务注解：`@Transactional`
+
+    - 类：所有方法添加事务
+    - 方法：该方法实现事务
+
+    ```java
+    @Service
+    @Transactional
+    public class UserService{...}
+    ```
+
+4. 事务管理的参数配置
+
+    ![image-20220531222004853](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531222004853.png)
+
+    - **propagation**：事务的传播行为，默认为`REQUIRED`
+
+        ![image-20220531223347686](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531223347686.png)
+
+        ![事务传播行为](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BA%8B%E5%8A%A1%E4%BC%A0%E6%92%AD%E8%A1%8C%E4%B8%BA.bmp)
+
+    - **isolation**：事务的隔离级别
+
+        **并发操作中的问题：**
+
+        ![image-20220531231427590](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/image-20220531231427590.png)
+
+        - 脏读：一个未提交的事务读取到另一个**未提交**事务的数据
+
+        - 不可重复读：一个未提交的事务读取到另一个提交事务的**修改**数据
+
+        - 幻读：一个未提交的事务读取到另一个提交事务的**添加**数据
+
+        **解决问题的方法，设置事务的隔离级别：**默认为`REPEATABLE READ`
+
+        ![事务隔离级别](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB.bmp)
+    
+        
+    
+    - **timeout**：超时时间
+    
+        - 事务需要在一定时间内提交，如果不提交则进行回滚
+    
+        - 默认值为-1，设置时间以秒为单位进行计算
+    
+    - readOnly：是否只读
+    
+        - 读：查询操作，写：增删改操作
+        - 默认值：false
+    
+    - rollbackFor：回滚
+    
+        - 设置出现那些异常进行事务回滚
+    
+    - noRrollbackFor：不回滚
+    
+        - 设置出现那些异常不进行事务回滚 
+
+#### 2.3.2 基于xml配置文件方式
+
+1. 配置事务管理器
+
+    ```xml
+    <!--创建事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dateSource"></property>
+    </bean>
+    ```
+
+    
+
+2. 配置通知
+
+    ```xml
+    <!--配置通知-->
+    <tx:advice id="txadvice">
+        <!--配置事务参数-->
+        <tx:attributes>
+            <!--指定那种规则的方法上添加事务-->
+            <tx:method name="accountMoney" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    ```
+
+    
+
+3. 配置切入点和切面
+
+    ```xml
+    <!--配置切入点和切面-->
+    <aop:config>
+        <!--配置切入点-->
+        <aop:pointcut id="pt" expression="execution(* com.atlff.spring5.service.UserService.*(..))"/>
+        <!--配置切面-->
+        <aop:advisor advice-ref="txadvice" pointcut-ref="pt"/>
+    </aop:config>
+    ```
+
+#### 2.3.3 完全注解声明式事务管理
+
+创建配置类，使用配置类代替xml文件
+
+```java
+@Configuration //配置类
+@ComponentScan(basePackages = "com.atlff.spring5") //开启组件扫描
+@EnableTransactionManagement //开启事务
+public class TxConfig {
+    //创建数据库连接池
+    @Bean
+    public DruidDataSource getDruidDataSource(){
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql:///user_db");
+        dataSource.setUsername("root");
+        dataSource.setPassword("abc123");
+        return dataSource;
+    }
+    //创建JdbcTemplate数据库链接模板
+    @Bean
+    public JdbcTemplate getJdbcTemplate(DataSource dataSource){
+        //到ioc容器中根据类型找到dataSource
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        jdbcTemplate.setDataSource(dataSource);
+        return jdbcTemplate;
+    }
+    //创建事务管理器
+    @Bean
+    public DataSourceTransactionManager getDataSourceTransactionManager(DataSource dataSource){
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource);
+        return transactionManager;
+    }
+}
+```
+
+
+
+# 六. Spring5新特性
+
+## 1. 基于java8
+
+整个框架的代码基于java8，运行时兼容JDK9，许多不建议使用的类和方法在代码库中删除
+
+## 2. 自带日志封装
+
+Spring 5.0框架自带了通用的日志封装
+
+- Spring5已经移除Log4ConfigListener，官方建议使用Log4j2
+- Spring5框架整合Log4j2
+
+1）导入jar包
+
+![image-20220601170939805](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/202206011709145.png)
+
+2）新建配置文件`log4j2.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--Configuration后面的status用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，可以看到log4j2内部各种详细输出-->
+<configuration status="INFO">
+    <!--先定义所有的appender-->
+    <appenders>
+        <!--输出日志信息到控制台-->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--控制日志输出的格式-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </console>
+    </appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <!--root：用于指定项目的根日志，如果没有单独指定Logger，则会使用root作为默认的日志输出-->
+    <loggers>
+        <root level="info">
+            <appender-ref ref="Console"/>
+        </root>
+    </loggers>
+</configuration>
+```
+
+## 3. 支持@Nullable注解
+
+可以用在类，方法上，方法参数，属性上，表示对应值可以为空。
+
+## 4. 函数式风格
+
+`GenericApplicationContext`/`AnnotationConfigApplicationContext`
+
+例子：
+
+```java
+@Test
+public void testGenericApplicationContext(){
+    //1. 创建GenericApplicationContext对象
+    GenericApplicationContext context = new GenericApplicationContext();
+    //2. 调用context的方法注册对象
+    context.refresh();
+    context.registerBean("user",User.class, ()->new User());
+    //3. 获取在spring中注册的对象
+    User user = (User)context.getBean("user");
+    System.out.println("user = " + user);
+}
+```
+
+## 5. 整合JUnit5
+
+### 5.1 同时兼容JUnit4
+
+以下为<span style="color:red">整合JUnit4</span>的方法
+
+1. 引入依赖包
+
+    ![image-20220601190021120](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/202206011900238.png)
+
+    和`JUnit4的依赖包`
+
+2. 通过注解整合JUnit4
+
+    ```java
+    @RunWith(SpringJUnit4ClassRunner.class)
+    @ContextConfiguration("classpath:bean.xml") //加载配置文件
+    public class JTest4 {
+        @Autowired
+        private UserService userService;
+    
+        @Test
+        public void test1(){
+            userService.accountMoney();
+        }
+    }
+    ```
+
+### 5.2 Spring5整合JUnit5
+
+1. 导入JUnit5的依赖包
+
+    `JUnit5.8.1`
+
+2. 在测试类中使用注解
+
+    ```java
+    //@ExtendWith(SpringExtension.class)
+    //@ContextConfiguration("classpath:bean.xml") //加载配置文件
+    
+    @SpringJUnitConfig(locations = "classpath:bean.xml") //符合注解，替换上面两个注解
+    public class JTest4 {
+        @Autowired
+        private UserService userService;
+    
+        @Test
+        public void test1(){
+            userService.accountMoney();
+        }
+    }
+    ```
+
+## 6. Webflux
+
+<span style="color:red;font-weight:bold">前置知识：SpringMVC，SpringBoot，Maven，Java8中的新特性</span>
+
+### 6.1 SpringWebflux介绍
+
+
+
+### 6.2 响应式编程
+
+
+
+### 6.3 Webflux执行流程 和 核心API
+
+
+
+### 6.4 SpringWebflux（基于注解编程模型）
+
+
+
+### 6.5 SpringWebflux（基于函数式编程模型）
