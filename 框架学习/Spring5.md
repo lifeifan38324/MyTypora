@@ -56,6 +56,11 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 指的是<span style="color:blue">创建对象</span>和<span style="color:blue">注入对象</span>的属性
 
 #### 3.2.1. 基于`xml`方式创建对象
+
+依赖包：导入基本的核心依赖包以及logging即可
+
+![image-20220602081532501](https://typora-lff.oss-cn-guangzhou.aliyuncs.com/202206020815987.png)
+
 1. 在spring配置文件中，使用bean标签，标签里面添加对应的属性，可以实现对象的创建
     - id属性：唯一表示
     - class属性：类的全路径（src为根路径）
@@ -206,7 +211,7 @@ ps: F4 可以查看继承树结构（康师傅快捷键）
 
 2. 为Bean的属性设置值（调用set方法）
 
-3. <span style="color:gray">把bean实例传递bean后置处理器的方法</span>
+3. <span style="color:gray">把bean实例传递bean前置处理器的方法</span>
 
     添加后置处理器：
 
@@ -659,7 +664,7 @@ public class PersonProxy {}
     </aop:config>
     ```
 
-
+<span style="color:red;font-weight:bold">注意：`before`与`around`的执行顺序看配置文件；而`after`总是再`around`之后执行</span>
 
 # 四.`JdbcTemplate`
 
@@ -672,6 +677,8 @@ Spring5封装之后的JDBC
 1. 导入jar包
 
     ![image-20220530122930818](C:/Users/LFF/AppData/Roaming/Typora/typora-user-images/image-20220530122930818.png)
+
+    **注意：mysql8应该选择版本8的驱动**
 
 2. 在xml配置文件中，配置数据库的连接池
 
@@ -746,10 +753,18 @@ Spring5封装之后的JDBC
 
 - 查（返回某个值）：queryForObject
 
-- 查（返回某个对象）：
+    `queryForObject(String sql, Class<T> requiredType)`
 
     ```java
-    queryForObject(String sql, RowMapper<T> rowMapper, Object... args)
+    queryForObject(String sql, Integer.class)
+    ```
+
+- 查（返回某个对象）：
+
+    `queryForObject(String sql, RowMapper<T> rowMapper, Object... args)`
+
+    ```java
+    queryForObject(sql, new BeanPropertyRowMapper<>(User.class), name);
     ```
 
     本质：调用set方法赋值
@@ -762,8 +777,10 @@ Spring5封装之后的JDBC
 
 - 查（返回对象列表）：
 
+    `query(sql, new BeanPropertyRowMapper<>(Book.class), Object ... args)`
+
     ```java
-    query(sql, new BeanPropertyRowMapper<>(Book.class))
+    query(sql, new BeanPropertyRowMapper<>(User.class), args)
     ```
 
 - 批量增删改：
