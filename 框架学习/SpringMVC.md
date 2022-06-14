@@ -581,7 +581,7 @@ public String testServletAPI(HttpServletRequest request){
 }
 ```
 
-### 2、使用ModelAndView向request域对象共享数据
+### 2、使用ModelAndView向request域对象共享数据(建议使用)
 
 ```java
 @RequestMapping("/testModelAndView")
@@ -1087,6 +1087,15 @@ public String deleteEmployee(@PathVariable("id") Integer id){
 }
 ```
 
+##### d>开放对静态资源的访问`springMVC.xml`
+
+```xml
+<!--  开放对静态资源的访问  -->
+<mvc:default-servlet-handler />
+<!--  开启注解驱动  -->
+<mvc:annotation-driven />
+```
+
 ### 6、具体功能：跳转到添加数据页面
 
 ##### a>配置view-controller
@@ -1239,7 +1248,7 @@ public String testRequestEntity(RequestEntity<String> requestEntity){
 requestHeader:[host:"localhost:8080", connection:"keep-alive", content-length:"27", cache-control:"max-age=0", sec-ch-ua:"" Not A;Brand";v="99", "Chromium";v="90", "Google Chrome";v="90"", sec-ch-ua-mobile:"?0", upgrade-insecure-requests:"1", origin:"http://localhost:8080", user-agent:"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"]
 requestBody:username=admin&password=123
 
-### 3、@ResponseBody
+### 3、@ResponseBody（使用最多）
 
 @ResponseBody用于标识一个控制器方法，可以将该方法的返回值直接作为响应报文的响应体响应到浏览器
 
@@ -1269,7 +1278,7 @@ a>导入jackson的依赖
 
 b>在SpringMVC的核心配置文件中开启mvc的注解驱动，此时在HandlerAdaptor中会自动装配一个消息转换器：MappingJackson2HttpMessageConverter，可以将响应到浏览器的Java对象转换为Json格式的字符串
 
-```
+```xml
 <mvc:annotation-driven />
 ```
 
@@ -1434,7 +1443,7 @@ public String testUp(MultipartFile photo, HttpSession session) throws IOExceptio
 
 SpringMVC中的拦截器用于拦截控制器方法的执行
 
-SpringMVC中的拦截器需要实现HandlerInterceptor
+SpringMVC中的拦截器需要实现`HandlerInterceptor`接口
 
 SpringMVC的拦截器必须在SpringMVC的配置文件中进行配置：
 
@@ -1449,6 +1458,7 @@ SpringMVC的拦截器必须在SpringMVC的配置文件中进行配置：
 </mvc:interceptor>
 <!-- 
 	以上配置方式可以通过ref或bean标签设置拦截器，通过mvc:mapping设置需要拦截的请求，通过mvc:exclude-mapping设置需要排除的请求，即不需要拦截的请求
+	注意：path中的"/*"只拦截一层目录, 需要拦截所有目录,则使用"/**"
 -->
 ```
 
